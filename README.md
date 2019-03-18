@@ -1,6 +1,6 @@
 # cliTube
 
-A simple CLI Interface to play Youtube-Videos from Windows-Powershell
+A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube <Video-Title>`
 
 ## Installation
 
@@ -16,7 +16,7 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell
     pip install google-api-python-client
     ```
 
-5. Place cliTube.py in a directory of your choice.
+5. Place [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice.
 6. Create a file named `secret.py` in the same directory and enter the API-Key generated above.
 
     ```secret.py
