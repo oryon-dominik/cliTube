@@ -16,15 +16,14 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
     pip install google-api-python-client
     ```
 
-5. Place [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice.
+5. Place [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice (e.g: `"C:\Users\<username>\Documents\Scripts\cliTube"`).
 6. Create a file named `secret.py` in the same directory and enter the API-Key generated above.
 
     ```secret.py
     DEVELOPER_KEY = '<your secret GOOGLE-API key>'
     ```
 
-7. Add the directory of your choice to the PATH environment variable.
-    Click [here](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) for a tutorial on how-to modify your windows-10 PATH accordingly or modify and execute the powershell-commands below for your needs.
+7. Add the directory of your choice to the [PATH environment variable](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) or modify and execute the powershell-commands below for your needs.
 
     ```powershell
     $user_env = [Environment]::GetEnvironmentVariable("PATH", "User")
@@ -32,7 +31,7 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
     [Environment]::SetEnvironmentVariable("PATH", "$user_env;$cliTube_path", "User")
     ```
 
-    Alternatively you could just set an Alias.
+    Alternatively you could just set an alias.
 
     ```powershell
     Set-Alias -Name tube -Value <your_path>/cliTube.py -Description "Plays Youtube Search-Results"
@@ -40,7 +39,7 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
 
 ## Usage
 
-Type `cliTube.py <The Video-Title you want to play>`
+Type `cliTube.py <The Video-Title you want to play>` or just `tube <searchterm>` with alias set.
 
 If there are several matches, cliTube will randomly select which video to play. If you don't like this "feature" modify the code for your needs accordingly. (You could set the probabilities in the function `choose` to `probabilities = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]` to always play the first match)
 
