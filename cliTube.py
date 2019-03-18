@@ -8,10 +8,10 @@ It builds Tube-URLS from artist & title arguments
 '''
 
 
-__version__ = '0.1.1' # first local release
+__version__ = '0.1.2' # github release
 __author__ = 'oryon/dominik'
 __date__ = 'November 28, 2018'
-__updated__ = 'December 3, 2018'
+__updated__ = 'March 18, 2019'
 
 
 import json
