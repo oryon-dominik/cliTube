@@ -54,26 +54,31 @@ def choose(results):
     """ chooses the video randomly """
     probabilities = [.3, .25, .2, .1, .05, .025, .025, .025, .0125, .0125]
     hits, videos = {}, []
+    choice = ''
 
-    for match in results['items']:
-        ident = match['id']['videoId']
-        title = match['snippet']['title']
-        hits[f'{ident}'] = title
+    if 'items' in results:
+        for match in results['items']:
+            if 'id' in match and 'snippet' in match:
+                if 'videoId' in match['id'] and 'title' in match['snippet']:
+                    ident = match['id']['videoId']
+                    title = match['snippet']['title']
+                    hits[f'{ident}'] = title
 
-    # print(json.dumps(hits, indent=4))  # these are the Videos concerned
+        # print(json.dumps(hits, indent=4))  # these are the Videos concerned
 
-    for hit in hits:
-        videoURL = f'https://www.youtube.com/watch?v={hit}'
-        videos.append(videoURL)
+        for hit in hits:
+            videoURL = f'https://www.youtube.com/watch?v={hit}'
+            videos.append(videoURL)
 
-    if videos:
-        if len(videos) >= 10:
-            choice = np.random.choice(videos, p=probabilities)
+        if videos:
+            if len(videos) >= 10:
+                choice = np.random.choice(videos, p=probabilities)
+            else:
+                choice = np.random.choice(videos)
         else:
-            choice = np.random.choice(videos)
+            print('No results for searchTerm')
     else:
-        print('No results for searchTerm')
-        choice = ''
+        print('No items found in search result')
 
     return choice
 
