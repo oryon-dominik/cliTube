@@ -8,24 +8,34 @@ It builds Tube-URLS from artist & title arguments
 '''
 
 
-__version__ = '0.1.2' # github release
+__version__ = '0.1.3' # github release, added secrets
 __author__ = 'oryon/dominik'
 __date__ = 'November 28, 2018'
-__updated__ = 'March 18, 2019'
+__updated__ = 'April 16, 2019'
 
 
 import json
 import numpy as np
 import subprocess
+import os
 
 from argparse import ArgumentParser, RawTextHelpFormatter
+from pathlib import Path
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from secret import DEVELOPER_KEY
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
+
+
+def get_key():
+    secret_path = Path(__file__).resolve().parent / 'secret.py'
+    if secret_path.exists():
+        from secret import DEVELOPER_KEY
+        return DEVELOPER_KEY
+    elif os.environ.get('DEVELOPER_KEY'):
+        return os.environ['DEVELOPER_KEY']
 
 
 def stringify(args):
@@ -102,6 +112,11 @@ parser.add_argument('search', metavar='Searchterm', help='the searchstring (Arti
 
 if __name__ == '__main__':
     args = parser.parse_args()
+
+    DEVELOPER_KEY = get_key()
+
+    if not DEVELOPER_KEY:
+        raise SystemExit('Did not find environment variable DEVELOPER_KEY')
 
     if not args.search:
         parser.print_help()
