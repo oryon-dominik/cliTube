@@ -8,10 +8,10 @@ It builds Tube-URLS from artist & title arguments
 '''
 
 
-__version__ = '0.1.3' # github release, added secrets
+__version__ = '0.2' # minor readme changes and improvments, removed the secrets.py approach
 __author__ = 'oryon/dominik'
 __date__ = 'November 28, 2018'
-__updated__ = 'April 16, 2019'
+__updated__ = 'December 31, 2020'
 
 
 import json
@@ -30,19 +30,14 @@ YOUTUBE_API_VERSION = 'v3'
 
 
 def get_key():
-    secret_path = Path(__file__).resolve().parent / 'secret.py'
-    if secret_path.exists():
-        from secret import DEVELOPER_KEY
-        return DEVELOPER_KEY
-    elif os.environ.get('DEVELOPER_KEY'):
-        return os.environ['DEVELOPER_KEY']
+    return os.environ['GOOGLE_DEVELOPER_KEY']
 
 
 def stringify(args):
     return ' '.join(args.search)
 
 
-def get_SearchResults_from_Youtube(search):
+def get_search_results_from_youtube(search):
     """ returns actual data of results from SearchString """
 
     youtube = build(
@@ -63,32 +58,33 @@ def get_SearchResults_from_Youtube(search):
 def choose(results):
     """ chooses the video randomly """
     probabilities = [.3, .25, .2, .1, .05, .025, .025, .025, .0125, .0125]
-    hits, videos = {}, []
-    choice = ''
 
-    if 'items' in results:
-        for match in results['items']:
-            if 'id' in match and 'snippet' in match:
-                if 'videoId' in match['id'] and 'title' in match['snippet']:
-                    ident = match['id']['videoId']
-                    title = match['snippet']['title']
-                    hits[f'{ident}'] = title
+    try:
+        assert 'items' in results, 'No items found in search result'
+
+        matches = [
+            match for match in results['items']
+            if 'id' in match and 'snippet' in match and 'videoId' in match['id'] and 'title' in match['snippet']
+        ]
+        hits = {}
+        for match in matches:
+            ident = match['id']['videoId']
+            title = match['snippet']['title']
+            hits.update({
+                f'{ident}': title
+            })
 
         # print(json.dumps(hits, indent=4))  # these are the Videos concerned
+        videos = [f'https://www.youtube.com/watch?v={hit}' for hit in hits]
+        assert videos, "No results for searchTerm"
 
-        for hit in hits:
-            videoURL = f'https://www.youtube.com/watch?v={hit}'
-            videos.append(videoURL)
-
-        if videos:
-            if len(videos) >= 10:
-                choice = np.random.choice(videos, p=probabilities)
-            else:
-                choice = np.random.choice(videos)
+        if len(videos) >= 10:
+            choice = np.random.choice(videos, p=probabilities)
         else:
-            print('No results for searchTerm')
-    else:
-        print('No items found in search result')
+            choice = np.random.choice(videos)
+    except AssertionError as e:
+        print(e)
+        choice = ''
 
     return choice
 
@@ -96,7 +92,7 @@ def choose(results):
 def play(url):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.wShowWindow = 4  # this sends the window into the background on windows
-    subprocess.Popen(["vlc", f"{url}"], startupinfo=startupinfo)
+    subprocess.run(["vlc", f"{url}"], startupinfo=startupinfo)
 
 
 # handling the arguments
@@ -123,7 +119,7 @@ if __name__ == '__main__':
 
     else:
         search = stringify(args)
-        results = get_SearchResults_from_Youtube(search)
+        results = get_search_results_from_youtube(search)
         match = choose(results)
         if match:
             play(match)

@@ -4,7 +4,7 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
 
 ## Installation
 
-1. Your file-extensions `.py` have to be associated with Python (**>= 3.6**). If you used the Windows-Installer, that should already be the case (else look that up in the [official docs](https://docs.python.org/3/faq/windows.html#how-do-i-make-python-scripts-executable)).
+1. Your file-extensions `.py` have to be associated to run as scripts with python (**>= 3.6**). If you used the Windows-Installer, that should already be the case (else look that up in the [official docs](https://docs.python.org/3/faq/windows.html#how-do-i-make-python-scripts-executable)). You could also just make a binary yourself.
 
 2. A valid installation of [VLC media player](http://www.videolan.org/vlc/) in your path-environment is required.
 
@@ -16,25 +16,28 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
     pip install google-api-python-client
     ```
 
-5. Place [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice (e.g: `"C:\Users\<username>\Documents\Scripts\cliTube"`).
-6. Create a file named `secret.py` in the same directory and enter the API-Key generated above.
-
-    ```secret.py
-    DEVELOPER_KEY = '<your secret GOOGLE-API key>'
-    ```
-
-7. Add the directory of your choice to the [PATH environment variable](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/) or modify and execute the powershell-commands below for your needs.
+5. Place [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice (e.g: `"$env:home\bin"`). Ensure that directory is on `PATH`.
 
     ```powershell
-    $user_env = [Environment]::GetEnvironmentVariable("PATH", "User")
-    $cliTube_path = "C:\Users\<username>\Documents\Scripts\cliTube"
-    [Environment]::SetEnvironmentVariable("PATH", "$user_env;$cliTube_path", "User")
+    $path = [Environment]::GetEnvironmentVariable("PATH", "User")
+    $script_binaries = "env:home\bin"
+    [Environment]::SetEnvironmentVariable("PATH", "$path;$script_binaries", "User")
+    ```
+
+6. Set the `GOOGLE_DEVELOPER_KEY` environment variable
+
+    ```powershell
+    [Environment]::SetEnvironmentVariable(
+        "GOOGLE_DEVELOPER_KEY",
+        'your secret GOOGLE-API key',
+        [System.EnvironmentVariableTarget]::User
+    )
     ```
 
     Alternatively you could just set an alias.
 
     ```powershell
-    Set-Alias -Name tube -Value <your_path>/cliTube.py -Description "Plays Youtube Search-Results"
+    Set-Alias -Name tube -Value $env:home\bin\cliTube.py -Description "Plays Youtube Search-Results"
     ```
 
 ## Usage
