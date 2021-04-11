@@ -10,13 +10,22 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
 
 3. If you already have a GOOGLE-DEVELOPER-API-KEY you may skip this step. Otherwise you need to [register your own API-KEY](https://developers.google.com/youtube/android/player/register) to gain Access to the required YouTube Data API.
 
-4. Have the google-api-client for Python installed.
+4. Have the google-api-client for Python and numpy installed.
 
     ```shell
-    pip install google-api-python-client
+    python -m pip install google-api-python-client numpy
     ```
 
-5. Place [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice (e.g: `"$env:home\bin"`). Ensure that directory is on `PATH`.
+5. Place [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice (e.g: `"$env:home\bin"`). Ensure that directory is on `PATH`. 
+
+Alternatively compile an executable with `pyinstaller`.
+
+    ```powershell
+    python -m pip install pyinstaller
+    pyinstaller.exe --onefile cliTube.py --distpath . --clean
+    ```
+
+Add `bin` directory to path.
 
     ```powershell
     $path = [Environment]::GetEnvironmentVariable("PATH", "User")
@@ -24,21 +33,26 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
     [Environment]::SetEnvironmentVariable("PATH", "$path;$script_binaries", "User")
     ```
 
-6. Set the `GOOGLE_DEVELOPER_KEY` environment variable
+Copy the executable.
+
+    ```powershell
+    mkdir -p $script_binaries
+    cp cliTube.exe $env:home\bin\cliTube.exe
+    Set-Alias -Name tube -Value $env:home\bin\cliTube.exe -Description "Plays Youtube Search-Results"
+    ```
+
+
+6. Set the `GOOGLE_API_KEY` environment variable.
 
     ```powershell
     [Environment]::SetEnvironmentVariable(
-        "GOOGLE_DEVELOPER_KEY",
+        "GOOGLE_API_KEY",
         'your secret GOOGLE-API key',
         [System.EnvironmentVariableTarget]::User
     )
     ```
 
-    Alternatively you could just set an alias.
-
-    ```powershell
-    Set-Alias -Name tube -Value $env:home\bin\cliTube.py -Description "Plays Youtube Search-Results"
-    ```
+    You can also set the key in your `env:DOTFILES/local/.env` (or modify the script to find your own secret `.env`).
 
 ## Usage
 
