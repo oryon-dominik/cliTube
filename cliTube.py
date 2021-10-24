@@ -78,7 +78,14 @@ def stringify(args):
 
 
 def get_search_results_from_youtube(search, api_key, youtube_api_service_name="youtube", youtube_api_version="v3"):
-    """ returns actual data of results from SearchString """
+    """
+    returns actual data of results from SearchString
+
+    docs on all available APIs:
+    https://github.com/googleapis/google-api-python-client/blob/main/docs/dyn/index.md
+    docs on the YouTube API:
+    https://googleapis.github.io/google-api-python-client/docs/dyn/youtube_v3.html
+    """
     try:
         youtube = build(
             youtube_api_service_name,
@@ -98,6 +105,7 @@ def get_search_results_from_youtube(search, api_key, youtube_api_service_name="y
     except HttpError as error:
         raise SystemExit(f'{error}\nConnection failed.')
 
+    # youtube.close()  # TODO: custom context-manager class
     return response
 
 
