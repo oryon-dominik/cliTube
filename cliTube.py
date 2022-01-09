@@ -9,7 +9,7 @@ __doc__ = f'''
 cliTube plays Internet-Music from CLI on Windows with preinstalled VLC
 It builds Tube-URLS from artist & title arguments
 
-requires a GOOGLE_API_KEY set as dotenv or environment variable
+requires a GOOGLE_YOUTUBE_API_KEY set as dotenv or environment variable
 
 required modules:
     python -m pip install {REQUIREMENTS}
@@ -50,14 +50,14 @@ CUSTOM_DOTENV_PATH = None  # modify this (pathlib-style), if you want to use you
 def get_google_api_key(custom_dotenv_path=None):
     """precedence: 1. os 2. .env"""
     # get the key from os
-    developer_key = os.environ.get('GOOGLE_API_KEY')
+    developer_key = os.environ.get('GOOGLE_YOUTUBE_API_KEY')
     if developer_key is not None:
         return developer_key
 
     # get it from dotfiles instead
     dotfiles_path = os.environ.get('DOTFILES')
     if dotfiles_path is None:
-        raise SystemExit('Did neither find environment variables DOTFILES nor GOOGLE_API_KEY. Setup failed.')
+        raise SystemExit('Did neither find environment variables DOTFILES nor GOOGLE_YOUTUBE_API_KEY. Setup failed.')
 
     # read .env
     if custom_dotenv_path is not None:
@@ -67,9 +67,9 @@ def get_google_api_key(custom_dotenv_path=None):
     if not envs.exists():
         raise SystemExit('.env not found')
     load_dotenv(envs)
-    developer_key = os.environ.get('GOOGLE_API_KEY')
+    developer_key = os.environ.get('GOOGLE_YOUTUBE_API_KEY')
     if developer_key is None:
-        raise SystemExit('Did not find GOOGLE_API_KEY in .env')
+        raise SystemExit('Did not find GOOGLE_YOUTUBE_API_KEY in .env')
     return developer_key
 
 
