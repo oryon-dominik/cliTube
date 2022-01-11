@@ -63,7 +63,7 @@ def get_google_api_key(custom_dotenv_path=None):
     if custom_dotenv_path is not None:
         envs = Path(custom_dotenv_path)
     else:
-        envs = Path(dotfiles_path) / "local" / ".env"
+        envs = Path(dotfiles_path) / ".env"
     if not envs.exists():
         raise SystemExit('.env not found')
     load_dotenv(envs)
