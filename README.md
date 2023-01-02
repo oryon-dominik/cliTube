@@ -2,6 +2,26 @@
 
 A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube <Video-Title>`
 
+
+## Usage
+
+    tube SONG
+
+Type `cliTube.py <The Video-Title you want to play>` or just `tube <searchterm>` with alias set.
+
+If there are several matches, cliTube will randomly select which video to play. If you don't like this "feature" modify the code for your needs accordingly. (You could set the probabilities in the function `choose` to `probabilities = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]` to always play the first match)
+
+Have fun tubing!
+
+
+## Issues
+
+    if it doesn't play, try to update the youtube.lua from github (run clitube with
+    the --update flag and permissions)
+
+    tube --update
+
+
 ## Installation
 
 1. Your file-extensions `.py` have to be associated to run as scripts with python (**>= 3.6**). If you used the Windows-Installer, that should already be the case (else look that up in the [official docs](https://docs.python.org/3/faq/windows.html#how-do-i-make-python-scripts-executable)). You could also just make a binary yourself.
@@ -16,7 +36,7 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
     python -m pip install google-api-python-client numpy httpx python-dotenv
     ```
 
-5. Place [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice (e.g: `"$env:home\bin"`). Ensure that directory is on `PATH`. 
+5. Place a symlink to [cliTube.py](https://raw.githubusercontent.com/oryon-dominik/cliTube/master/cliTube.py) in a directory of your choice (e.g: `"$env:home\bin"`). Ensure that directory is on `PATH`. 
 
     Alternatively compile an executable with `pyinstaller`.
 
@@ -53,11 +73,3 @@ A simple CLI Interface to play Youtube-Videos from Windows-Powershell with `tube
     ```
 
     You can also set the key in your `env:DOTFILES/local/.env` (or modify `CUSTOM_DOTENV_PATH` on top of the script to find your own secret `.env`).
-
-## Usage
-
-Type `cliTube.py <The Video-Title you want to play>` or just `tube <searchterm>` with alias set.
-
-If there are several matches, cliTube will randomly select which video to play. If you don't like this "feature" modify the code for your needs accordingly. (You could set the probabilities in the function `choose` to `probabilities = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]` to always play the first match)
-
-Have fun tubing!

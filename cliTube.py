@@ -10,6 +10,8 @@ cliTube plays Internet-Music from CLI on Windows with preinstalled VLC
 It builds Tube-URLS from artist & title arguments
 
 requires a GOOGLE_YOUTUBE_API_KEY set as dotenv or environment variable
+if it doesn't play, try to update the youtube.lua from github (run clitube with
+the --update flag and permissions)
 
 required modules:
     python -m pip install {REQUIREMENTS}
@@ -21,10 +23,11 @@ to build as exe:
     rm clitube.spec; rm build
 '''
 
-__version__ = '0.5'  # explicit requirements
+__version__ = '0.6'  # python update to >=3.11
 __author__ = 'oryon/dominik'
 __date__ = 'November 28, 2018'
-__updated__ = 'October 03, 2021'
+__updated__ = 'January 02, 2023'
+
 
 
 import subprocess
@@ -164,7 +167,7 @@ def play(url, name):
 def update():
     """update vlc youtube.lua from github"""
     lua_url =  "https://raw.githubusercontent.com/videolan/vlc/master/share/lua/playlist/youtube.lua"
-    vlc_path = Path("C:\Program Files\VideoLAN\VLC")
+    vlc_path = Path("C:/Program Files/VideoLAN/VLC")
     playlist_path = vlc_path / "lua" / "playlist"
     lua_path = playlist_path / "youtube.lua"
 
