@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+import subprocess
+import os
+
+from argparse import ArgumentParser, RawTextHelpFormatter
+from pathlib import Path
+
+
+__version__ = '0.6'  # python update to >=3.11
+__author__ = 'oryon/dominik'
+__date__ = 'November 28, 2018'
+__updated__ = 'January 02, 2023'
+
 
 REQUIREMENTS = "google-api-python-client numpy httpx python-dotenv"
-
 
 __doc__ = f'''
 cliTube plays Internet-Music from CLI on Windows with preinstalled VLC
@@ -23,57 +34,40 @@ to build as exe:
     rm clitube.spec; rm build
 '''
 
-__version__ = '0.6'  # python update to >=3.11
-__author__ = 'oryon/dominik'
-__date__ = 'November 28, 2018'
-__updated__ = 'January 02, 2023'
-
-
-
-import subprocess
-import os
-
-from argparse import ArgumentParser, RawTextHelpFormatter
-from pathlib import Path
-
 try:
     import httpx
     from dotenv import load_dotenv
     import numpy as np
     from googleapiclient.discovery import build
     from googleapiclient.errors import HttpError
-
 except ImportError as error:
     raise SystemExit(f"Import failed. {error}. 'python -m pip install {REQUIREMENTS}'.")
 
 
-CUSTOM_DOTENV_PATH = None  # modify this (pathlib-style), if you want to use your own dotenvs-location
+CUSTOM_DOTENV_PATH: Path | str = ".env"  # custom path to your own dotenvs-location
 
 
-def get_google_api_key(custom_dotenv_path=None):
-    """precedence: 1. os 2. .env"""
-    # get the key from os
-    developer_key = os.environ.get('GOOGLE_YOUTUBE_API_KEY')
-    if developer_key is not None:
-        return developer_key
+def get_google_api_key():
+    """Grab the API_KEY. Key's precedence: 1. os 2. dotfiles, 3. .env"""
 
-    # get it from dotfiles instead
-    dotfiles_path = os.environ.get('DOTFILES')
-    if dotfiles_path is None:
-        raise SystemExit('Did neither find environment variables DOTFILES nor GOOGLE_YOUTUBE_API_KEY. Setup failed.')
+    key = os.environ.get('GOOGLE_YOUTUBE_API_KEY')
+    if key is not None:
+        return key
 
-    # read .env
-    if custom_dotenv_path is not None:
-        envs = Path(custom_dotenv_path)
-    else:
-        envs = Path(dotfiles_path) / ".env"
-    if not envs.exists():
-        raise SystemExit('.env not found')
-    load_dotenv(envs)
-    developer_key = os.environ.get('GOOGLE_YOUTUBE_API_KEY')
-    if developer_key is None:
+    dotfiles = os.environ.get('DOTFILES')
+    directory: Path = Path(__file__).parent if dotfiles is None else Path(dotfiles)
+    dotenv = directory / CUSTOM_DOTENV_PATH
+
+    if not dotenv.exists():
+        print('.env not found')
+        raise SystemExit('.env not found. Setup failed.')
+
+    load_dotenv(dotenv)
+
+    key = os.environ.get('GOOGLE_YOUTUBE_API_KEY')
+    if key is None:
         raise SystemExit('Did not find GOOGLE_YOUTUBE_API_KEY in .env')
-    return developer_key
+    return key
 
 
 def stringify(args):
@@ -116,6 +110,7 @@ def choose(results):
     """ chooses the video randomly """
     probabilities = [.3, .25, .2, .1, .05, .025, .025, .025, .0125, .0125]
 
+    hits = {}
     try:
         assert 'items' in results, 'No items found in search result'
 
@@ -123,7 +118,7 @@ def choose(results):
             match for match in results['items']
             if 'id' in match and 'snippet' in match and 'videoId' in match['id'] and 'title' in match['snippet']
         ]
-        hits = {}
+
         for match in matches:
             ident = match['id']['videoId']
             title = match['snippet']['title']
@@ -214,7 +209,7 @@ if __name__ == '__main__':
         raise SystemExit(f'')
 
     # play
-    api_key = get_google_api_key(custom_dotenv_path=CUSTOM_DOTENV_PATH)
+    api_key = get_google_api_key()
     search = stringify(args)
     results = get_search_results_from_youtube(search, api_key)
     url, name = choose(results)
